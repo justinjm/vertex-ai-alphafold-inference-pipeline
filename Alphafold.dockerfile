@@ -54,6 +54,10 @@ RUN wget -q -P /tmp \
 
 # Install conda packages.
 ENV PATH="/opt/conda/bin:$PATH"
+
+# Accept the Anaconda Terms of Service
+RUN conda config --set auto_update_conda false && conda tos accept
+
 RUN conda install -qy conda==24.11.2 conda-forge::libmamba \
     && conda install -y -c conda-forge \
       openmm=7.7.0 \
