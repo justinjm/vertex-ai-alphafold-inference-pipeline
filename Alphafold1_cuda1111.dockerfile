@@ -58,14 +58,16 @@ ENV PATH="/opt/conda/bin:$PATH"
 # Accept the Anaconda Terms of Service
 RUN conda config --set auto_update_conda false && conda tos accept
 
-RUN conda install -qy conda==24.11.2 \
-    && conda install -y -c conda-forge \
+RUN conda install -qy --solver=libmamba \
+      -c conda-forge \
+      -c nvidia/label/cuda-11.1.1 \
+      python=3.10 \
+      conda=24.11.2 \
       openmm=7.7.0 \
-      cudatoolkit==${CUDA_VERSION} \
       pdbfixer \
       pip \
-      python=3.10 \
-      && conda clean --all --force-pkgs-dirs --yes
+      cuda-libraries-dev \
+    && conda clean --all --force-pkgs-dirs --yes
 
 RUN git clone https://github.com/deepmind/alphafold.git /app/alphafold
 RUN git -C /app/alphafold reset --hard $ALPHAFOLD_COMMIT
@@ -88,4 +90,3 @@ ADD src/components/alphafold_utils.py .
 
 ENV PYTHONPATH=/app/alphafold:/modules
 RUN ldconfig
-
