@@ -12,32 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-locals {
-  image_project = "deeplearning-platform-release"
-}
-
-resource "google_notebooks_instance" "notebook_instance" {
+resource "google_workbench_instance" "notebook_instance" {
   depends_on = [ google_project_service.enable_required_services ]
   name         = var.workbench_instance_name
-  machine_type = var.machine_type
   location     = var.zone
 
-  network = google_compute_network.network.id
-  subnet  = google_compute_subnetwork.subnetwork.id
-
-  vm_image {
-    project      = local.image_project
-    image_family = var.image_family
-  }
-
-  metadata = {
-    terraform = "true"
-  }
-
-  boot_disk_size_gb   = var.boot_disk_size
-  no_remove_data_disk = true
-
-  labels = {
-    goog-packaged-solution = "target-and-lead-id"
+  gce_setup {
+    machine_type = var.machine_type
+    network_interfaces {
+      network = google_compute_network.network.id
+      subnet  = google_compute_subnetwork.subnetwork.id
+    }
+    vm_image {
+      # project = "deeplearning-platform-release"
+      project = "cloud-notebooks-managed"
+      family  = var.image_family
+    }
+    boot_disk {
+      disk_size_gb = var.boot_disk_size
+    }
   }
 }

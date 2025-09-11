@@ -84,7 +84,7 @@ variable "filesharename" {
 variable "image_family" {
   description = "A Deep Learning image family for the Notebook instance"
   type        = string
-  default     = "common-cpu-notebooks"
+  default     = "workbench-instances"
 }
 
 variable "force_destroy" {
