@@ -46,6 +46,14 @@ function App() {
     fetchClientId();
   }, []);
 
+  useEffect(() => {
+    // On initial load, check if an access token exists in session storage
+    const storedToken = sessionStorage.getItem("accessToken");
+    if (storedToken) {
+      setAccessToken(storedToken);
+    }
+  }, []);
+
   function showSnackbar(message: string, notificationType: AlertColor) {
     setNotifContent(message);
     setNotifType(notificationType);
@@ -80,6 +88,7 @@ function App() {
           clientId={clientId}
           // onSignIn={(idToken: string, userInfo: string, accessToken: string) => {
           onSignIn={(accessToken: string) => {
+            sessionStorage.setItem("accessToken", accessToken);
             setAccessToken(accessToken);
           }}
           onError={(err: any) => showSnackbar(JSON.stringify(err), "error")}
